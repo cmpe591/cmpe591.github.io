@@ -4,21 +4,51 @@
     <title>CMPE591: Deep Learning in Robotics</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link href="static/styles.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="w3-container" style="max-width: 960px; margin: auto">
+    <div class="w3-container w3-margin-bottom" style="max-width: 960px; margin: auto">
         <header class="">
-            <h1 class="w3-indigo w3-center">CMPE591: Deep Learning in Robotics</h1>
-            <nav class="w3-bar w3-light-gray">
+            <h1 class="w3-center">CMPE591: Deep Learning in Robotics</h1>
+            <nav class="w3-bar">
                 <a class="w3-bar-item w3-button" href="index.html">Syllabus</a>
                 <a class="w3-bar-item w3-button" href="homeworks.html">Homeworks</a>
             </nav>
         </header>
-        <div class="w3-row">
-            <p>To be announced.</p>
-        </div>
+        <details open>
+            <summary><h2>Preparing the Environment</h2></summary>
+            <div class="w3-row">
+                It is suggested that you install a virtual environment for this course. You can use Anaconda or Miniconda (smaller size) for this purpose. You can download Anaconda from <a href="https://www.anaconda.com/products/distribution">here</a>. Alternatively, you can use Mamba (a faster version of conda) for this purpose. You can download Mamba from <a href="https://github.com/conda-forge/miniforge#mambaforge">here</a>. Install the downloaded script by running the following command in your terminal:
+                <pre>$ bash &ltdownloaded_script&gt.sh</pre>
+                After the installation, you can create a virtual environment by running the following command:
+<pre>
+# For Anaconda
+$ conda create -n &ltvirtual_environment_name&gt python=3
+$ conda activate &ltvirtual_environment_name&gt
+
+# For Mamba
+$ mamba create -n &ltvirtual_environment_name&gt python=3
+$ mamba activate &ltvirtual_environment_name&gt
+</pre>
+                You will need to run <code>mamba activate &ltvirtual_environment_name&gt</code> (or <code>conda</code>) every time you open a new terminal to activate the virtual environment. You can deactivate the virtual environment by running <code>mamba deactivate</code>.<br><br>
+                We will use <a href="https://mujoco.org">MuJoCo</a> and <a href="https://github.com/deepmind/dm_control">dm_control</a> for our simulation environment. You can install them by running:
+<pre>
+$ pip install dm_control  # dm_control automatically installs mujoco
+</pre>
+                also install some other dependencies:
+<pre>
+$ pip install mujoco-python-viewer
+$ pip install pyyaml
+</pre>
+                You are now ready to start the homeworks. Download the first homework environment <a href="homeworks/homework1.zip">homework1.zip</a> and run <code>python homework1.py</code> to see the results. You should be able to see the following output (press <kbd>tab</kbd> after the window opens to change the camera, or use the default interactive camera):
+                <img class="w3-margin-top w3-margin-bottom" src="images/hw1.png" alt="homework1" style="width: 100%">
+    It is suggested that you use <a href="https://code.visualstudio.com/">Visual Studio Code</a> with GitHub Copilot for easier development (though double-check everything that copilot suggests).
+            </div>
+        </details>
+        <details>
+            <summary><h2>Homework 1</h2></summary>
+        </details>
     </div>
 </body>
 

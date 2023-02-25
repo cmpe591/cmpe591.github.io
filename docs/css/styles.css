@@ -1,0 +1,33 @@
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    border-radius: 5px;
+}
+
+h1 {
+    background-color: dodgerblue;
+    color: white
+}
+
+nav {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+}
+
+pre {
+    background-color: lightcyan;
+    padding: 0.5em;
+    border-radius: 10px;
+}
+
+code {
+    background-color: lightcyan;
+    padding: 0.1em;
+}
+
+details summary { 
+  cursor: pointer;
+}
+
+details summary > * {
+  display: inline;
+}
