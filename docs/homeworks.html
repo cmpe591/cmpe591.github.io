@@ -46,8 +46,36 @@ $ pip install pyyaml
     It is suggested that you use <a href="https://code.visualstudio.com/">Visual Studio Code</a> with GitHub Copilot for easier development (though double-check everything that copilot suggests).
             </div>
         </details>
-        <details>
+        <details open>
             <summary><h2>Homework 1</h2></summary>
+            <div class="w3-row">
+                The environment is defined for you. You can run the percept-and-act style of loop with the following code (see <code>homework1.py</code> for the full environment definition):
+<pre>
+if __name__ == "__main__":
+    N_ACTIONS = 8
+    env = Homework1(n_actions=N_ACTIONS)
+    for episode in range(10):
+        done = False
+        cum_reward = 0.0
+        start = time.time()
+        while not done:
+            action = np.random.randint(N_ACTIONS)
+            # change render to "step" if you want to see the environment
+            state, reward, is_terminal, is_truncated = env.step(action, render=None)
+            done = is_terminal or is_truncated
+            cum_reward += reward
+        end = time.time()
+        print(f"Episode={episode}, reward={cum_reward:.2f}, RF={env.data.time/(end-start):.2f}")
+        env.reset()
+
+    # render a single episode
+    done = False
+    while not done:
+        action = np.random.randint(N_ACTIONS)
+        state, reward, is_terminal, is_truncated = env.step(action, render="full")
+        done = is_terminal or is_truncated
+</pre>
+            </div>
         </details>
     </div>
 </body>
