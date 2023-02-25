@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>CMPE591: Deep Learning in Robotics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="static/styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="w3-container" style="max-width: 960px; margin: auto">
+        <header class="">
+            <h1 class="w3-indigo w3-center">CMPE591: Deep Learning in Robotics</h1>
+            <nav class="w3-bar w3-light-gray">
+                <a class="w3-bar-item w3-button" href="index.html">Syllabus</a>
+                <a class="w3-bar-item w3-button" href="homeworks.html">Homeworks</a>
+            </nav>
+        </header>
+        <div class="w3-row">
+            <p>This course aims to introduce the advanced state-of-the-art deep learning methods used in robotics. The methods are studied in robotic reinforcement learning, behavior cloning, learning from demonstration, imitation learning, predictive world modeling, and hybrid reasoning tasks. The students are expected to learn the details of these methods, their motivations and limitations in different robotic problems. The students are also expected to acquire hands-on experience on these methods. A simulated robotic environment in PyBullet with an arm-hand robot and relevant sensors is provided to the students. Using the relevant deep learning libraries, the students are expected to implement robot learning frameworks where the robots learn to acquire desired skill sets.</p>
+        </div>
+        <div class="w3-row"><h4>Textbook</h4></div>
+        <div class="w3-row">
+            <ul>
+                <li>Sutton, Richard S., and Andrew G. Barto. Reinforcement learning: An introduction. MIT press, 2018. (selected chapters) <a href="https://www.andrew.cmu.edu/course/10-703/textbook/BartoSutton.pdf">https://www.andrew.cmu.edu/course/10-703/textbook/BartoSutton.pdf</a></li>
+                <li>Goodfellow, Ian, Yoshua Bengio, and Aaron Courville. Deep learning. MIT press, 2016. (selected chapters) <a href="https://www.deeplearningbook.org/">https://www.deeplearningbook.org/</a></li>
+                <li>See the additional reading list below.</li>
+            </ul>
+        </div>
+        <div class="w3-row"><h4>Homeworks</h4></div>
+        <div class="w3-row">
+            The homeworks can be implemented in pairs, however the partner should change in each homework. The robot simulation environment or the robot interaction dataset is provided to the students in homeworks.
+        </div>
+        <div class="w3-row"><h4>Group Project</h4></div>
+        <div class="w3-row">
+            A group of (up to 3) students extend one of the methods they implement and submit this extension to a local journal. Submission to the journal is a must for the project to be eligible for evaluation.
+        </div>
+        <div class="w3-row"><h4>Tentative Outline</h4></div>
+        <div class="w3-row">
+            <ol>
+                <li>Introduction to deep learning, backpropagation, convolutional neural networks
+                  <ul>
+                    <li>Goodfellow, Ian, Yoshua Bengio, and Aaron Courville. Deep learning. MIT press, 2016. (Chapters 6 &amp; 9)</li>
+                  </ul>
+                </li>
+                <li>Deep q-learning / CNN
+                  <ul>
+                    <li>Sutton, Richard S., and Andrew G. Barto. Reinforcement learning: An introduction. MIT press, 2018. (Chapters 6, 9, 10 &amp; 11.1.)</li>
+                    <li>Mnih, Volodymyr, et al. "Human-level control through deep reinforcement learning." Nature 518.7540 (2015): 529-533.</li>
+                    <li>Zeng, Andy, et al. "Tossingbot: Learning to throw arbitrary objects with residual physics." IEEE Transactions on Robotics 36.4 (2020): 1307-1319.</li>
+                  </ul>
+                </li>
+                <li>Deep policy gradients, Actor-Critic Algorithms (GAE, PPO, TRPO, SAC)
+                  <ul>
+                    <li>Sutton, Richard S., and Andrew G. Barto. Reinforcement learning: An introduction. MIT press, 2018. (Chapter 13)</li>
+                    <li>Schulman, John, et al. "Proximal policy optimization algorithms." arXiv preprint arXiv:1707.06347 (2017).</li>
+                    <li>Haarnoja, Tuomas, et al. "Soft actor-critic algorithms and applications." arXiv preprint arXiv:1812.05905 (2018).</li>
+                    <li>Schulman, John, et al. "High-dimensional continuous control using generalized advantage estimation." arXiv preprint arXiv:1506.02438 (2015).</li>
+                    <li>Schulman, John, et al. "Trust region policy optimization." International conference on machine learning. PMLR, 2015.</li>
+                  </ul>
+                </li>
+                <li>Offline Deep-RL
+                  <ul>
+                    <li>Levine, Sergey, et al. "Offline reinforcement learning: Tutorial, review, and perspectives on open problems." arXiv preprint arXiv:2005.01643 (2020).</li>
+                    <li>Singh, Avi, Albert Yu, Jonathan Yang, Jesse Zhang, Aviral Kumar, and Sergey Levine. "Cog: Connecting new skills to past experience with offline reinforcement learning." arXiv preprint arXiv:2010.14500 (2020).</li>
+                    <li>Learning from Demonstration (with RNNs, LSTMs)</li>
+                    <li>Goodfellow, Ian, Yoshua Bengio, and Aaron Courville. Deep learning. MIT press, 2016. (Chapter 10)</li>
+                    <li>Rahmatizadeh, Rouhollah, et al. "From virtual demonstration to real-world manipulation using LSTM and MDN." Proceedings of the AAAI Conference on Artificial Intelligence. Vol. 32. No. 1. 2018.</li>
+                    <li>Seker, M. Yunus, Ahmet E. Tekden, and Emre Ugur. "Deep effect trajectory prediction in robot manipulation." Robotics and Autonomous Systems 119 (2019): 173-184.</li>
+                  </ul>
+                </li>
+                <li>Learning from Demonstration and RL (with CNMPs):
+                  <ul>
+                    <li>Seker, Muhammet Yunus, et al. "Conditional Neural Movement Primitives." Robotics: Science and Systems. Vol. 10. 2019.</li>
+                    <li>Akbulut, Mete, et al. "Acnmp: Skill transfer and task extrapolation through learning from demonstration and reinforcement learning via representation sharing." Conference on Robot Learning. PMLR, 2021.</li>
+                  </ul>
+                </li>
+                <li>Behavior Cloning, Transformers in Robotics:
+                  <ul>
+                    <li>Chen, Lili, et al. "Decision transformer: Reinforcement learning via sequence modeling." Advances in neural information processing systems 34 (2021): 15084-15097.</li>
+                    <li>Janner, Li, Levine. "Reinforcement Learning as One Big Sequence Modeling Problem". 2021</li>
+                    <li>Shridhar, Mohit, Lucas Manuelli, and Dieter Fox. "Perceiver-actor: A multi-task transformer for robotic manipulation." arXiv preprint arXiv:2209.05451 (2022).</li>
+                    <li>Brohan, Anthony, et al. "RT-1: Robotics Transformer for Real-World Control at Scale." arXiv preprint arXiv:2212.06817 (2022).</li>
+                  </ul>
+                </li>
+                <li>Predictive Coding with GNNs
+                  <ul>
+                    <li>Tekden, Ahmet E., et al. "Belief regulated dual propagation nets for learning action effects on groups of articulated objects." 2020 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2020.</li>
+                  </ul>
+                </li>
+                <li>Adversarial Models
+                  <ul>
+                    <li>Goodfellow, Ian, Yoshua Bengio, and Aaron Courville. Deep learning. MIT press, 2016. (Chapter 20.10.4)</li>
+                    <li>Ho, Jonathan, and Stefano Ermon. "Generative adversarial imitation learning." Advances in neural information processing systems 29 (2016).</li>
+                  </ul>
+                </li>
+                <li>Contrastive Learning
+                  <ul>
+                    <li>Srinivas, Aravind, Michael Laskin, and Pieter Abbeel. "Curl: Contrastive unsupervised representations for reinforcement learning." arXiv preprint arXiv:2004.04136 (2020).</li>
+                    <li>Li, Yunzhu, et al. "3d neural scene representations for visuomotor control." Conference on Robot Learning. PMLR, 2022.</li>
+                  </ul>
+                </li>
+                <li>Large Language Models in Robotics
+                  <ul>
+                    <li>Ahn, Michael, et al. "Do as i can, not as i say: Grounding language in robotic affordances." arXiv preprint arXiv:2204.01691 (2022).</li>
+                    <li>Shridhar, Mohit, Lucas Manuelli, and Dieter Fox. "Cliport: What and where pathways for robotic manipulation." Conference on Robot Learning. PMLR, 2022.</li>
+                    <li>Fan, Linxi, et al. "Minedojo: Building open-ended embodied agents with internet-scale knowledge." arXiv preprint arXiv:2206.08853 (2022).</li>
+                  </ul>
+                </li>
+                <li>Neuro-symbolic Methods: Symbol Emergence
+                  <ul>
+                    <li>Konidaris, G., Kaelbling, L. P., &amp; Lozano-Perez, T. (2018). From skills to symbols: Learning symbolic representations for abstract high-level planning. Journal of Artificial Intelligence Research, 61, 215-289.</li>
+                    <li>LatPlan: Asai, M., &amp; Fukunaga, A. (2018, April). Classical planning in deep latent space: Bridging the subsymbolic-symbolic boundary. In Proceedings of the aaai conference on artificial intelligence (Vol. 32, No. 1).</li>
+                    <li>Ahmetoglu, Alper, et al. "DeepSym: Deep Symbol Generation and Rule Learning for Planning from Unsupervised Robot Interaction." Journal of Artificial Intelligence Research 75 (2022): 709-745.</li>
+                  </ul>
+                </li>
+                <li>Diffusion Methods in Robotics
+                  <ul>
+                    <li>Lambert, Alexander, et al. "Learning Implicit Priors for Motion Optimization." arXiv preprint arXiv:2204.05369 (2022).</li>
+                  </ul>
+                </li>
+                <li>Project presentations</li>
+              </ol>
+        </div>
+    </div>
+</body>
+
+</html>
