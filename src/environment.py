@@ -1,11 +1,10 @@
 import collections
 from copy import deepcopy
 
-import cv2
 import numpy as np
 from dm_control import mjcf
 import mujoco
-from mujoco import Renderer
+import mujoco_viewer
 from scipy.spatial.transform import Rotation as R
 from scipy.spatial.transform import Slerp
 
@@ -16,7 +15,7 @@ IKResult = collections.namedtuple(
 
 class BaseEnv:
     def __init__(self) -> None:
-        self.renderer = None
+        self.viewer = None
         self._fps = 30
         self._init_position = [-np.pi/2, -1.07, np.pi/2, -2.07, -np.pi/2, 0, 0]
         self._joint_names = [
@@ -37,15 +36,16 @@ class BaseEnv:
             del self.model
         if hasattr(self, "data"):
             del self.data
-        if self.renderer is not None:
-            del self.renderer
+        if self.viewer is not None:
+            self.viewer.close()
 
         scene = self._create_scene()
         xml_string = scene.to_xml_string()
         assets = scene.get_assets()
         self.model = mujoco.MjModel.from_xml_string(xml_string, assets=assets)
         self.data = mujoco.MjData(self.model)
-        self.renderer = Renderer(self.model, 480, 640)
+        self.viewer = mujoco_viewer.MujocoViewer(self.model, self.data)
+        # self.renderer = Renderer(self.model, 480, 640)
 
         self.data.ctrl[:] = self._init_position
         self._start = self.data.time
@@ -53,13 +53,8 @@ class BaseEnv:
         self._t = 0
 
     def render(self):
-        if self.data.time - self._start > (1 / self._fps):
-            self._start = self.data.time
-            self.renderer.update_scene(self.data, camera="frontface")
-            pixels = self.renderer.render()
-            cv2.imshow("image", cv2.cvtColor(pixels, cv2.COLOR_RGB2BGR))
-            cv2.setWindowTitle("image", f"t={self.data.time:.3f}")
-            cv2.waitKey(1)
+        self._start = self.data.time
+        self.viewer.render()
 
     def _create_scene(self):
         return create_tabletop_scene()
