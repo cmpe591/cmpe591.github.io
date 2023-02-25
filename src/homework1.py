@@ -48,7 +48,9 @@ class Homework1(environment.BaseEnv):
         ee_pos = state[:2]
         obj_pos = state[2:4]
         goal_pos = state[4:6]
-        return -np.linalg.norm(ee_pos - obj_pos) - np.linalg.norm(obj_pos - goal_pos)
+        ee_to_obj = max(100*np.linalg.norm(ee_pos - obj_pos), 1)
+        obj_to_goal = max(100*np.linalg.norm(obj_pos - goal_pos), 1)
+        return 1/(ee_to_obj) + 1/(obj_to_goal)
 
     def is_terminal(self):
         state = self.state()
@@ -89,7 +91,7 @@ if __name__ == "__main__":
         start = time.time()
         while not done:
             action = np.random.randint(N_ACTIONS)
-            state, reward, is_terminal, is_truncated = env.step(action, render='step')
+            state, reward, is_terminal, is_truncated = env.step(action, render="step")
             done = is_terminal or is_truncated
             cum_reward += reward
         end = time.time()
@@ -100,5 +102,5 @@ if __name__ == "__main__":
     done = False
     while not done:
         action = np.random.randint(N_ACTIONS)
-        state, reward, is_terminal, is_truncated = env.step(action, render="step")
+        state, reward, is_terminal, is_truncated = env.step(action, render="full")
         done = is_terminal or is_truncated
