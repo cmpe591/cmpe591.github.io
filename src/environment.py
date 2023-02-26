@@ -14,9 +14,9 @@ IKResult = collections.namedtuple(
 
 
 class BaseEnv:
-    def __init__(self) -> None:
+    def __init__(self, render_mode=None) -> None:
+        self._render_mode = render_mode
         self.viewer = None
-        self._fps = 30
         self._init_position = [-np.pi/2, -1.07, np.pi/2, -2.07, -np.pi/2, 0, 0]
         self._joint_names = [
             "ur5e/shoulder_pan_joint",
@@ -44,25 +44,32 @@ class BaseEnv:
         assets = scene.get_assets()
         self.model = mujoco.MjModel.from_xml_string(xml_string, assets=assets)
         self.data = mujoco.MjData(self.model)
-        self.viewer = mujoco_viewer.MujocoViewer(self.model, self.data)
-        self.viewer.cam.fixedcamid = 0
-        self.viewer.cam.type = 2
+        if self._render_mode == "gui":
+            self.viewer = mujoco_viewer.MujocoViewer(self.model, self.data)
+            self.viewer.cam.fixedcamid = 0
+            self.viewer.cam.type = 2
+            self.viewer._render_every_frame = False
+            self.viewer._run_speed = 64
+        elif self._render_mode == "offscreen":
+            self.viewer = mujoco_viewer.MujocoViewer(self.model, self.data, mode="offscreen")
 
         self.data.ctrl[:] = self._init_position
-        self._start = self.data.time
         mujoco.mj_step(self.model, self.data, nstep=2000)
         self._t = 0
 
     def render(self):
-        self._start = self.data.time
-        self.viewer.render()
+        if self._render_mode == "offscreen":
+            return self.viewer.read_pixels(camid=0)
+        elif self._render_mode == "gui":
+            self.viewer.render()
+        return None
 
     def _create_scene(self):
         return create_tabletop_scene()
 
-    def _step(self, render=False):
+    def _step(self):
         mujoco.mj_step(self.model, self.data)
-        if render:
+        if self._render_mode == "gui":
             self.render()
 
     def _get_joint_position(self):
@@ -73,7 +80,7 @@ class BaseEnv:
                 position[idx] /= 0.721
         return position
 
-    def _set_joint_position(self, position_dict, render=False, max_iters=10000, threshold=0.01):
+    def _set_joint_position(self, position_dict, max_iters=10000, threshold=0.01):
         for idx in position_dict:
             if idx == 6:
                 self.data.ctrl[idx] = position_dict[idx]*255
@@ -84,7 +91,7 @@ class BaseEnv:
         it = 0
         while max_error > threshold:
             it += 1
-            self._step(render)
+            self._step()
             max_error = 0
             current_position = self._get_joint_position()
             for idx in position_dict:
@@ -102,7 +109,7 @@ class BaseEnv:
         mujoco.mju_mat2Quat(ee_orientation, ee_rotation)
         return ee_position, ee_orientation
 
-    def _set_ee_pose(self, position, rotation=None, orientation=None, render=False, max_iters=10000, threshold=0.01):
+    def _set_ee_pose(self, position, rotation=None, orientation=None, max_iters=10000, threshold=0.01):
         if rotation is not None and orientation is not None:
             raise Exception("Only one of rotation or orientation can be set")
         quat = None
@@ -118,7 +125,7 @@ class BaseEnv:
         it = 0
         while max_error > threshold:
             it += 1
-            self._step(render)
+            self._step()
             max_error = 0
             curr_pos, curr_quat = self._get_ee_pose()
             max_error += np.linalg.norm(np.array(position) - curr_pos)
@@ -136,7 +143,7 @@ class BaseEnv:
             for idx in qdict:
                 self.data.ctrl[idx] = qpos[self._joint_qpos_idxs[idx]]
 
-    def _set_ee_in_cartesian(self, position, rotation=None, render=False, max_iters=10000, threshold=0.01, n_splits=20):
+    def _set_ee_in_cartesian(self, position, rotation=None, max_iters=10000, threshold=0.01, n_splits=20):
         ee_position, ee_orientation = self._get_ee_pose()
         position_traj = np.linspace(ee_position, position, n_splits+1)[1:]
         if rotation is not None:
@@ -147,12 +154,12 @@ class BaseEnv:
         else:
             orientation_traj = [ee_orientation]*n_splits
 
-        self._follow_ee_trajectory(position_traj, orientation_traj, render=render,
+        self._follow_ee_trajectory(position_traj, orientation_traj,
                                    max_iters=max_iters, threshold=threshold)
 
-    def _follow_ee_trajectory(self, position_traj, orientation_traj, render=False, max_iters=10000, threshold=0.01):
+    def _follow_ee_trajectory(self, position_traj, orientation_traj, max_iters=10000, threshold=0.01):
         for position, orientation in zip(position_traj, orientation_traj):
-            self._set_ee_pose(position, orientation=orientation, render=render,
+            self._set_ee_pose(position, orientation=orientation,
                               max_iters=max_iters, threshold=threshold)
 
 
