@@ -47,7 +47,6 @@ class BaseEnv:
         self.viewer = mujoco_viewer.MujocoViewer(self.model, self.data)
         self.viewer.cam.fixedcamid = 0
         self.viewer.cam.type = 2
-        # self.renderer = Renderer(self.model, 480, 640)
 
         self.data.ctrl[:] = self._init_position
         self._start = self.data.time
