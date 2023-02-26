@@ -166,6 +166,7 @@ class BaseEnv:
 def create_tabletop_scene():
     scene = create_empty_scene()
     add_camera_to_scene(scene, "frontface", [2.5, 0., 2.0], [-1.5, 0, 0])
+    add_camera_to_scene(scene, "topdown", [0.73, 0., 2.3], [0.68, 0, 0])
     create_base(scene, [0, 0, 0.5], 0.5)
     create_object(scene, "box", [0.7, 0, 1], [0, 0, 0, 1], [0.5, 0.5, 0.02], [0.7, 0.7, 0.7, 1.0], name="table", static=True)
     create_object(scene, "box", [0.7, 0, 0.5], [0, 0, 0, 1], [0.05, 0.05, 0.5], [0.9, 0.9, 0.9, 1.0], name="table_leg", static=True)
@@ -201,7 +202,7 @@ def create_empty_scene():
 def create_ur5e_robotiq85f():
     robot = mjcf.from_path("mujoco_menagerie/universal_robots_ur5e/ur5e.xml")
     gripper = mjcf.from_path("mujoco_menagerie/robotiq_2f85/2f85.xml")
-    gripper.worldbody.add("site", name="gripper_site", pos=[0, 0, 0.15], size=[0.01, 0.01, 0.01], rgba=[1, 0, 0, 1])
+    gripper.worldbody.add("site", name="gripper_site", pos=[0, 0, 0.15], size=[0.01, 0.01, 0.01], rgba=[1, 0, 0, 0])
     robot.find("site", "attachment_site").attach(gripper)
     return robot
 
