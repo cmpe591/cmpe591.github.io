@@ -49,7 +49,7 @@ class BaseEnv:
             self.viewer.cam.fixedcamid = 0
             self.viewer.cam.type = 2
             self.viewer._render_every_frame = False
-            self.viewer._run_speed = 64
+            self.viewer._run_speed = 2
         elif self._render_mode == "offscreen":
             self.viewer = mujoco_viewer.MujocoViewer(self.model, self.data, mode="offscreen")
 
