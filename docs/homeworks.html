@@ -38,8 +38,9 @@ $ pip install dm_control  # dm_control automatically installs mujoco
 </pre>
                 also install some other dependencies:
 <pre>
-$ pip install mujoco-python-viewer
+$ pip install git+https://github.com/alper111/mujoco-python-viewer.git
 $ pip install pyyaml
+$ mamba install numpy  # or conda install numpy
 </pre>
                 Additionally, we will use PyTorch for training our models, check out the <a href="https://pytorch.org/get-started/locally/">installation instructions</a>. After installing PyTorch, clone the homework repository by running:
 <pre>
