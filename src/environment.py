@@ -17,7 +17,7 @@ class BaseEnv:
     def __init__(self, render_mode=None) -> None:
         self._render_mode = render_mode
         self.viewer = None
-        self._init_position = [-np.pi/2, -1.07, np.pi/2, -2.07, -np.pi/2, 0, 0]
+        self._init_position = [-np.pi/2, -np.pi/2, np.pi/2, -2.07, -np.pi/2, 0, 0]
         self._joint_names = [
             "ur5e/shoulder_pan_joint",
             "ur5e/shoulder_lift_joint",
@@ -57,20 +57,13 @@ class BaseEnv:
         mujoco.mj_step(self.model, self.data, nstep=2000)
         self._t = 0
 
-    def render(self):
-        if self._render_mode == "offscreen":
-            return self.viewer.read_pixels(camid=0)
-        elif self._render_mode == "gui":
-            self.viewer.render()
-        return None
-
     def _create_scene(self):
         return create_tabletop_scene()
 
     def _step(self):
         mujoco.mj_step(self.model, self.data)
         if self._render_mode == "gui":
-            self.render()
+            self.viewer.render()
 
     def _get_joint_position(self):
         position = np.zeros(7)
@@ -80,7 +73,7 @@ class BaseEnv:
                 position[idx] /= 0.721
         return position
 
-    def _set_joint_position(self, position_dict, max_iters=10000, threshold=0.01):
+    def _set_joint_position(self, position_dict, max_iters=10000, threshold=0.05):
         for idx in position_dict:
             if idx == 6:
                 self.data.ctrl[idx] = position_dict[idx]*255
@@ -109,7 +102,7 @@ class BaseEnv:
         mujoco.mju_mat2Quat(ee_orientation, ee_rotation)
         return ee_position, ee_orientation
 
-    def _set_ee_pose(self, position, rotation=None, orientation=None, max_iters=10000, threshold=0.01):
+    def _set_ee_pose(self, position, rotation=None, orientation=None, max_iters=10000, threshold=0.04):
         if rotation is not None and orientation is not None:
             raise Exception("Only one of rotation or orientation can be set")
         quat = None
@@ -143,7 +136,7 @@ class BaseEnv:
             for idx in qdict:
                 self.data.ctrl[idx] = qpos[self._joint_qpos_idxs[idx]]
 
-    def _set_ee_in_cartesian(self, position, rotation=None, max_iters=10000, threshold=0.01, n_splits=20):
+    def _set_ee_in_cartesian(self, position, rotation=None, max_iters=10000, threshold=0.04, n_splits=20):
         ee_position, ee_orientation = self._get_ee_pose()
         position_traj = np.linspace(ee_position, position, n_splits+1)[1:]
         if rotation is not None:
@@ -157,7 +150,7 @@ class BaseEnv:
         self._follow_ee_trajectory(position_traj, orientation_traj,
                                    max_iters=max_iters, threshold=threshold)
 
-    def _follow_ee_trajectory(self, position_traj, orientation_traj, max_iters=10000, threshold=0.01):
+    def _follow_ee_trajectory(self, position_traj, orientation_traj, max_iters=10000, threshold=0.04):
         for position, orientation in zip(position_traj, orientation_traj):
             self._set_ee_pose(position, orientation=orientation,
                               max_iters=max_iters, threshold=threshold)
@@ -168,7 +161,7 @@ def create_tabletop_scene():
     add_camera_to_scene(scene, "frontface", [2.5, 0., 2.0], [-1.5, 0, 0])
     add_camera_to_scene(scene, "topdown", [0.73, 0., 2.3], [0.68, 0, 0])
     create_base(scene, [0, 0, 0.5], 0.5)
-    create_object(scene, "box", [0.7, 0, 1], [0, 0, 0, 1], [0.5, 0.5, 0.02], [0.7, 0.7, 0.7, 1.0], name="table", static=True)
+    create_object(scene, "box", [0.7, 0, 1], [0, 0, 0, 1], [0.5, 0.5, 0.02], [0.7, 0.7, 0.7, 1.0], friction=[0.2, 0.005, 0.0001], name="table", static=True)
     create_object(scene, "box", [0.7, 0, 0.5], [0, 0, 0, 1], [0.05, 0.05, 0.5], [0.9, 0.9, 0.9, 1.0], name="table_leg", static=True)
     create_object(scene, "capsule", [0.7, 0.5, 1.04], [0, 0.7071068, 0, 0.7071068], [0.02, 0.5], [0.3, 0.3, 1.0, 1.0], name="right_wall", static=True)
     create_object(scene, "capsule", [0.7, -0.5, 1.04], [0, 0.7071068, 0, 0.7071068], [0.02, 0.5], [0.3, 0.3, 1.0, 1.0], name="left_wall", static=True)
@@ -207,11 +200,12 @@ def create_ur5e_robotiq85f():
     return robot
 
 
-def create_object(root, obj_type, pos, quat, size, rgba, friction=[0.5, 0.005, 0.0001], name=None, static=False):
+def create_object(root, obj_type, pos, quat, size, rgba, friction=[0.5, 0.005, 0.0001], density=1000,
+                  name=None, static=False):
     body = root.worldbody.add("body", pos=pos, quat=quat, name=name)
     if not static:
         body.add("joint", type="free")
-    body.add("geom", type=obj_type, size=size, rgba=rgba, friction=friction, name=name)
+    body.add("geom", type=obj_type, size=size, rgba=rgba, friction=friction, name=name, density=density)
     return root
 
 
