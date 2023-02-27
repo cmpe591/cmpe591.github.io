@@ -97,5 +97,5 @@ if __name__ == "__main__":
     done = False
     while not done:
         action = np.random.randint(N_ACTIONS)
-        state, reward, is_terminal, is_truncated = env.step(action, render="full")
+        state, reward, is_terminal, is_truncated = env.step(action)
         done = is_terminal or is_truncated
