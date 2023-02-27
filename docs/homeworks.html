@@ -24,11 +24,11 @@
                 After the installation, you can create a virtual environment by running the following command:
 <pre>
 # For Anaconda
-$ conda create -n &ltvirtual_environment_name&gt python=3
+$ conda create -n &ltvirtual_environment_name&gt python=3.9
 $ conda activate &ltvirtual_environment_name&gt
 
 # For Mamba
-$ mamba create -n &ltvirtual_environment_name&gt python=3
+$ mamba create -n &ltvirtual_environment_name&gt python=3.9
 $ mamba activate &ltvirtual_environment_name&gt
 </pre>
                 You will need to run <code>mamba activate &ltvirtual_environment_name&gt</code> (or <code>conda</code>) every time you open a new terminal to activate the virtual environment. You can deactivate the virtual environment by running <code>mamba deactivate</code>.<br><br>
@@ -41,41 +41,50 @@ $ pip install dm_control  # dm_control automatically installs mujoco
 $ pip install mujoco-python-viewer
 $ pip install pyyaml
 </pre>
-                You are now ready to start the homeworks. Download the first homework environment <a href="homeworks/homework1.zip">homework1.zip</a> and run <code>python homework1.py</code> to see the results. You should be able to see the following output (press <kbd>tab</kbd> after the window opens to change the camera, or use the default interactive camera):
+                Additionally, we will use PyTorch for training our models, check out the <a href="https://pytorch.org/get-started/locally/">installation instructions</a>. After installing PyTorch, clone the homework repository by running:
+<pre>
+$ git clone https://github.com/cmpe591/cmpe591.github.io.git
+</pre>
+Homeworks will be released in the <code>src</code> folder of the repository. You can run the demo code by running:
+<pre>
+$ cd cmpe591.github.io/src
+$ python demo.py
+</pre>
+                You should see the following output:
                 <img class="w3-margin-top w3-margin-bottom" src="images/hw1.png" alt="homework1" style="width: 100%">
-    It is suggested that you use <a href="https://code.visualstudio.com/">Visual Studio Code</a> with GitHub Copilot for easier development (though double-check everything that copilot suggests).
+                <code>environment.py</code> and <code>mujoco_menagerie</code> will be common throughout homeworks and <code>homework&ltx&gt.py</code> will be added each week.
+    It is suggested that you use <a href="https://code.visualstudio.com/">Visual Studio Code</a> with GitHub Copilot for easier development (though double-check everything that copilot suggests). GitHub Copilot is free for students.
             </div>
         </details>
         <details open>
             <summary><h2>Homework 1</h2></summary>
             <div class="w3-row">
-                The environment is defined for you. You can run the percept-and-act style of loop with the following code (see <code>homework1.py</code> for the full environment definition):
+                In this homework, you will train a deep neural network that estimates the object's position given the executed action and the state (a top-down view of the environment). Below are some example states.
+                <div class="w3-container w3-center w3-margin-top w3-margin-bottom">
+                <img src="images/hw1_states.png" alt="homework1" style="width: 80%">
+                </div>
+                There are two object types (cube and sphere) with random sizes between 2cm to 3cm, and the robot randomly pushes the object to four main directions. Based on the object's type and size, the resulting object position changes. Assuming that you have already cloned the repository, you can run the following code for sampling the data:
 <pre>
-if __name__ == "__main__":
-    N_ACTIONS = 8
-    env = Homework1(n_actions=N_ACTIONS)
-    for episode in range(10):
-        done = False
-        cum_reward = 0.0
-        start = time.time()
-        while not done:
-            action = np.random.randint(N_ACTIONS)
-            # change render to "step" if you want to see the environment
-            state, reward, is_terminal, is_truncated = env.step(action, render=None)
-            done = is_terminal or is_truncated
-            cum_reward += reward
-        end = time.time()
-        print(f"Episode={episode}, reward={cum_reward:.2f}, RF={env.data.time/(end-start):.2f}")
-        env.reset()
+import numpy as np
+from homework1 import Hw1Env
 
-    # render a single episode
-    done = False
-    while not done:
-        action = np.random.randint(N_ACTIONS)
-        state, reward, is_terminal, is_truncated = env.step(action, render="full")
-        done = is_terminal or is_truncated
+env = Hw1Env(render_mode="gui")
+for _ in range(100):
+    env.reset()
+    action_id = np.random.randint(4)
+    _, img_before = env.state()
+    env.step(action_id)
+    pos_after, img_after = env.state()
+    env.reset()
 </pre>
-You will implement a Deep Q-Network (DQN) to solve the environment.
+                You might also want to check the main part of the <code>homework1.py</code> to see how to collect data with multiple processes. Sample 1000 data point and train
+                <ol>
+                    <li>A plain multi-layer perceptron (MLP)</li>
+                    <li>Convolutional neural network</li>
+                </ol>
+                using PyTorch.
+                <h3>Optional</h3>
+                Instead of predicting the object's position, predict the raw image of the environment after the action.
             </div>
         </details>
     </div>
