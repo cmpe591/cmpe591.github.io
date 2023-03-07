@@ -30,10 +30,14 @@ class Hw1Env(environment.BaseEnv):
 
     def state(self):
         obj_pos = self.data.body("obj1").xpos[:2]
-        pixels = self.viewer.read_pixels(camid=1).copy()
-        pixels = torch.tensor(pixels, dtype=torch.uint8).permute(2, 0, 1)
-        pixels = transforms.functional.center_crop(pixels, min(pixels.shape[1:]))
-        pixels = transforms.functional.resize(pixels, (128, 128))
+        if self._render_mode == "offscreen":
+            self.viewer.update_scene(self.data, camera="topdown")
+            pixels = torch.tensor(self.viewer.render().copy(), dtype=torch.uint8).permute(2, 0, 1)
+        else:
+            pixels = self.viewer.read_pixels(camid=1).copy()
+            pixels = torch.tensor(pixels, dtype=torch.uint8).permute(2, 0, 1)
+            pixels = transforms.functional.center_crop(pixels, min(pixels.shape[1:]))
+            pixels = transforms.functional.resize(pixels, (128, 128))
         return obj_pos, pixels
 
     def step(self, action_id):

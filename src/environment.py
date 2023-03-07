@@ -37,7 +37,10 @@ class BaseEnv:
         if hasattr(self, "data"):
             del self.data
         if self.viewer is not None:
-            self.viewer.close()
+            if self._render_mode == "offscreen":
+                del self.viewer
+            else:
+                self.viewer.close()
 
         scene = self._create_scene()
         xml_string = scene.to_xml_string()
@@ -51,7 +54,7 @@ class BaseEnv:
             self.viewer._render_every_frame = False
             self.viewer._run_speed = 2
         elif self._render_mode == "offscreen":
-            self.viewer = mujoco_viewer.MujocoViewer(self.model, self.data, mode="offscreen")
+            self.viewer = mujoco.Renderer(self.model, 128, 128)
 
         self.data.ctrl[:] = self._init_position
         mujoco.mj_step(self.model, self.data, nstep=2000)
