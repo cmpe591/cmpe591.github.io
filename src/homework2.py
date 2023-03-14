@@ -19,7 +19,7 @@ class Hw2Env(environment.BaseEnv):
         self._actions = {i: action for i, action in enumerate(actions)}
 
         self._goal_thresh = 0.01
-        self._max_timesteps = 200
+        self._max_timesteps = 50
 
     def _create_scene(self, seed=None):
         if seed is not None:
