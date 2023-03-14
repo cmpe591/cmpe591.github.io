@@ -17,7 +17,7 @@ class BaseEnv:
     def __init__(self, render_mode=None) -> None:
         self._render_mode = render_mode
         self.viewer = None
-        self._init_position = [-np.pi/2, -np.pi/2, np.pi/2, -2.07, -np.pi/2, 0, 0]
+        self._init_position = [-np.pi/2, -np.pi/2, np.pi/2, -2.07, 0, 0, 0]
         self._joint_names = [
             "ur5e/shoulder_pan_joint",
             "ur5e/shoulder_lift_joint",
@@ -57,6 +57,8 @@ class BaseEnv:
             self.viewer = mujoco.Renderer(self.model, 128, 128)
 
         self.data.ctrl[:] = self._init_position
+        mujoco.mj_step(self.model, self.data, nstep=2000)
+        self.data.ctrl[4] = -np.pi/2
         mujoco.mj_step(self.model, self.data, nstep=2000)
         self._t = 0
 

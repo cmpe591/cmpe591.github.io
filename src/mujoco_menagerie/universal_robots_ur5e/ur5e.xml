@@ -19,7 +19,7 @@
     <!-- Reference:
       https://www.universal-robots.com/articles/ur/robot-care-maintenance/max-joint-torques/ -->
     <default class="size3">
-      <joint armature="0.1" damping="200"/>
+      <joint armature="0.1" damping="100"/>
       <position kp="3500" forcerange="-150 150"/>
       <default class="size3_limited">
         <joint range="-3.1415 3.1415"/>
@@ -27,7 +27,7 @@
       </default>
     </default>
     <default class="size1">
-      <joint armature="0.1" damping="15"/>
+      <joint armature="0.1" damping="10"/>
       <position kp="3000" forcerange="-28 28"/>
     </default>
   </default>
