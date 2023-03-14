@@ -57,7 +57,7 @@ class Hw2Env(environment.BaseEnv):
         return np.concatenate([ee_pos, obj_pos, goal_pos])
 
     def reward(self):
-        state = self.state()
+        state = self.high_level_state()
         ee_pos = state[:2]
         obj_pos = state[2:4]
         goal_pos = state[4:6]
