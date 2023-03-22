@@ -140,6 +140,9 @@ class BaseEnv:
                 max_error += np.linalg.norm(error_vel)
             for idx in qdict:
                 self.data.ctrl[idx] = qpos[self._joint_qpos_idxs[idx]]
+            if it > max_iters:
+                print("Max iters reached")
+                break
 
     def _set_ee_in_cartesian(self, position, rotation=None, max_iters=10000, threshold=0.04, n_splits=20):
         ee_position, ee_orientation = self._get_ee_pose()
