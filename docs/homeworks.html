@@ -16,7 +16,7 @@
                 <a class="w3-bar-item w3-button" href="homeworks.html">Homeworks</a>
             </nav>
         </header>
-        <details open>
+        <details>
             <summary><h2>Preparing the Environment</h2></summary>
             <div class="w3-row">
                 It is suggested that you install a virtual environment for this course. You can use Anaconda or Miniconda (smaller size) for this purpose. You can download Anaconda from <a href="https://www.anaconda.com/products/distribution">here</a>. Alternatively, you can use Mamba (a faster version of conda) for this purpose. You can download Mamba from <a href="https://github.com/conda-forge/miniforge#mambaforge">here</a>. Install the downloaded script by running the following command in your terminal:
@@ -57,7 +57,7 @@ $ python demo.py
     It is suggested that you use <a href="https://code.visualstudio.com/">Visual Studio Code</a> with GitHub Copilot for easier development (though double-check everything that copilot suggests). GitHub Copilot is free for students.
             </div>
         </details>
-        <details open>
+        <details>
             <summary><h2>Homework 1 (Training a DNN using PyTorch)</h2></summary>
             <div class="w3-row">
                 <video autoplay loop style="border-radius: 5px;">
@@ -93,7 +93,7 @@ for _ in range(100):
                 Instead of predicting the object's position, predict the raw image of the environment after the action.
             </div>
         </details>
-        <details open>
+        <details>
             <summary><h2>Homework 2 (Deep Q Network)</h2></summary>
             <div class="w3-row w3-center">
                 <video autoplay loop style="border-radius: 5px;">
@@ -148,6 +148,12 @@ TARGET_NETWORK_UPDATE_FREQ = 100 # update the target network every 1000 steps
 BUFFER_LENGTH = 10000
 </pre>
                 This set is not definitive, but it seems to converge to a good policy. Feel free to share your good set of hyperparameters with the class. Plot the reward over episodes and add it to your submission. You can use <code>high_level_state</code> to get a higher-level state, instead of raw pixels. This might speed up your experimentation as you would not need to train a convolutional network.
+        </details>
+        <details open>
+            <summary><h2>Homework 3 (Policy Gradient Methods)</h2></summary>
+            <div class="w3-row">
+                In this homework, you will train either a vanilla policy gradient or proximal policy optimization (PPO) model to learn to push the object to the desired position. The environment is the same as the previous homework, except the actions are now continuous. Some boilerplate code is provided in <code>homework3.py</code> to collect data in multiple processes. Note that there might be more efficient implementations, and you are absolutely free not to use the provided code. In fact, you are free to use high-level implementations such as [Stable Baselines](https://stable-baselines.readthedocs.io/en/master/). However, you will need to define the environment yourself (which is not very hard). Make sure to pull the latest version of the repository by running <code>git pull</code>. Stable hyperparameters will be shared soon. Feel free to share your good set of hyperparameters with the class. Plot the reward over episodes and add it to your submission. As in HW2, you can use <code>high_level_state</code> to get a higher-level state instead of raw pixels.
+            </div>
         </details>
     </div>
 </body>
