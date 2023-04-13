@@ -14,7 +14,7 @@ IKResult = collections.namedtuple(
 
 
 class BaseEnv:
-    def __init__(self, render_mode=None) -> None:
+    def __init__(self, render_mode="gui") -> None:
         self._render_mode = render_mode
         self.viewer = None
         self._init_position = [-np.pi/2, -np.pi/2, np.pi/2, -2.07, 0, 0, 0]
@@ -97,7 +97,6 @@ class BaseEnv:
                 if error > max_error:
                     max_error = error
             if it > max_iters:
-                print("Max iters reached")
                 break
 
     def _get_ee_pose(self):
@@ -141,7 +140,6 @@ class BaseEnv:
             for idx in qdict:
                 self.data.ctrl[idx] = qpos[self._joint_qpos_idxs[idx]]
             if it > max_iters:
-                print("Max iters reached")
                 break
 
     def _set_ee_in_cartesian(self, position, rotation=None, max_iters=10000, threshold=0.04, n_splits=20):
