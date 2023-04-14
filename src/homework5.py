@@ -198,8 +198,8 @@ if __name__ == "__main__":
     for i in range(100):
         env.reset()
         p_1 = np.array([0.5, 0.3, 1.04])
-        p_2 = np.array([0.5, 0.15, np.random.uniform(1.04, 1.5)])
-        p_3 = np.array([0.5, -0.15, np.random.uniform(1.04, 1.5)])
+        p_2 = np.array([0.5, 0.15, np.random.uniform(1.04, 1.4)])
+        p_3 = np.array([0.5, -0.15, np.random.uniform(1.04, 1.4)])
         p_4 = np.array([0.5, -0.3, 1.04])
         points = np.stack([p_1, p_2, p_3, p_4], axis=0)
         curve = bezier(points)
