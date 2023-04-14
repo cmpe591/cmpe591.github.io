@@ -149,10 +149,30 @@ BUFFER_LENGTH = 10000
 </pre>
                 This set is not definitive, but it seems to converge to a good policy. Feel free to share your good set of hyperparameters with the class. Plot the reward over episodes and add it to your submission. You can use <code>high_level_state</code> to get a higher-level state, instead of raw pixels. This might speed up your experimentation as you would not need to train a convolutional network.
         </details>
-        <details open>
+        <details>
             <summary><h2>Homework 3 (Policy Gradient Methods)</h2></summary>
             <div class="w3-row">
                 In this homework, you will train either a vanilla policy gradient or proximal policy optimization (PPO) model to learn to push the object to the desired position. The environment is the same as the previous homework, except the actions are now continuous. Some boilerplate code is provided in <code>homework3.py</code> to collect data in multiple processes. Note that there might be more efficient implementations, and you are absolutely free not to use the provided code. In fact, you are free to use high-level implementations such as [Stable Baselines](https://stable-baselines.readthedocs.io/en/master/). However, you will need to define the environment yourself (which is not very hard). Make sure to pull the latest version of the repository by running <code>git pull</code>. Stable hyperparameters will be shared soon. Feel free to share your good set of hyperparameters with the class. Plot the reward over episodes and add it to your submission. As in HW2, you can use <code>high_level_state</code> to get a higher-level state instead of raw pixels.
+            </div>
+        </details>
+        <details>
+            <summary><h2>Homework 4 (Offline RL)</h2></summary>
+            <div class="w3-row">
+                In one short paragraph, please explain the advantages of offline RL in [1] over online RL in this particular work where data was not obtained from external reasources but was collected by the researchers themselves.
+                <br>
+                <br>
+                [1] Kalashnikov D, Irpan A, Pastor P, Ibarz J, Herzog A, Jang E, Quillen D, Holly E, Kalakrishnan M, Vanhoucke V, Levine S. Scalable deep reinforcement learning for vision-based robotic manipulation. InConference on Robot Learning 2018 Oct 23 (pp. 651-673). PMLR.
+            </div>
+        </details>
+        <details open>
+            <summary><h2>Homework 5 (Learning from Demonstration with CNMPs)</h2></summary>
+            <div class="w3-row w3-center">
+                <video autoplay loop style="border-radius: 5px;">
+                    <source src="images/hw5gif.mp4" type="video/mp4">
+                  </video>
+            </div>
+            <div class="w3-row">
+                In this homework, you will collect demonstrations that consist of (<i>t</i>, <i>e<sub>y</sub></i>, <i>e<sub>z</sub></i>, <i>o<sub>y</sub></i>, <i>o<sub>z</sub></i>) where <i>e</i> and <i>o</i> are the end-effector and the object cartesian coordinates with subscripts denoting the relevant axis. The code for collecting demonstrations is provided in <code>homework5.py</code>. The robot randomly moves its end-effector in the y-z plane, sometimes hitting the object and sometimes not. The height of the object is random and provided from the environment as well. You will train a CNMP with the following dataset: {(<i>t</i>, <i>e<sub>y</sub></i>, <i>e<sub>z</sub></i>, <i>o<sub>y</sub></i>, <i>o<sub>z</sub></i>)<sub>i</sub>, <i>h</i><sub>i</sub>}<sup>N</sup><sub>i=0</sub> where <i>h</i> is the height of the object. Here, <i>t</i> will be the query dimension, <i>h</i> will be the condition to be given to the decoder, and other dimensions will be target dimensions while training the CNMP. In other words, given several context points (with all dimensions provided), the model will be asked to predict the end-effector and the object positions given the time and the height of the object.
             </div>
         </details>
     </div>
