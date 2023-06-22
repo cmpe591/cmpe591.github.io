@@ -15,8 +15,11 @@ IKResult = collections.namedtuple(
 
 class BaseEnv:
     def __init__(self, render_mode="gui") -> None:
+        self._gripper_idx = 6
+        self._gripper_norm = 0.721
         self._render_mode = render_mode
         self.viewer = None
+        self._n_joints = 7
         self._init_position = [-np.pi/2, -np.pi/2, np.pi/2, -2.07, 0, 0, 0]
         self._joint_names = [
             "ur5e/shoulder_pan_joint",
@@ -71,16 +74,16 @@ class BaseEnv:
             self.viewer.render()
 
     def _get_joint_position(self):
-        position = np.zeros(7)
-        for idx in range(len(self._joint_names)):
+        position = np.zeros(self._n_joints)
+        for idx in range(self._n_joints):
             position[idx] = self.data.qpos[self._joint_qpos_idxs[idx]]
-            if idx == 6:
-                position[idx] /= 0.721
+            if idx == self._gripper_idx:
+                position[idx] /= self._gripper_norm
         return position
 
-    def _set_joint_position(self, position_dict, max_iters=10000, threshold=0.05):
+    def _set_joint_position(self, position_dict, max_iters=2000, threshold=0.05):
         for idx in position_dict:
-            if idx == 6:
+            if idx == self._gripper_idx:
                 self.data.ctrl[idx] = position_dict[idx]*255
             else:
                 self.data.ctrl[idx] = position_dict[idx]
@@ -106,7 +109,7 @@ class BaseEnv:
         mujoco.mju_mat2Quat(ee_orientation, ee_rotation)
         return ee_position, ee_orientation
 
-    def _set_ee_pose(self, position, rotation=None, orientation=None, max_iters=10000, threshold=0.04):
+    def _set_ee_pose(self, position, rotation=None, orientation=None, max_iters=2000, threshold=0.01):
         if rotation is not None and orientation is not None:
             raise Exception("Only one of rotation or orientation can be set")
         quat = None
@@ -142,7 +145,7 @@ class BaseEnv:
             if it > max_iters:
                 break
 
-    def _set_ee_in_cartesian(self, position, rotation=None, max_iters=10000, threshold=0.04, n_splits=20):
+    def _set_ee_in_cartesian(self, position, rotation=None, max_iters=2000, threshold=0.01, n_splits=30):
         ee_position, ee_orientation = self._get_ee_pose()
         position_traj = np.linspace(ee_position, position, n_splits+1)[1:]
         if rotation is not None:
@@ -156,10 +159,11 @@ class BaseEnv:
         self._follow_ee_trajectory(position_traj, orientation_traj,
                                    max_iters=max_iters, threshold=threshold)
 
-    def _follow_ee_trajectory(self, position_traj, orientation_traj, max_iters=10000, threshold=0.04):
+    def _follow_ee_trajectory(self, position_traj, orientation_traj, max_iters=2000, threshold=0.01):
+        n_splits = len(position_traj)
         for position, orientation in zip(position_traj, orientation_traj):
             self._set_ee_pose(position, orientation=orientation,
-                              max_iters=max_iters, threshold=threshold)
+                              max_iters=max_iters//n_splits, threshold=threshold)
 
 
 def create_tabletop_scene():
@@ -167,12 +171,20 @@ def create_tabletop_scene():
     add_camera_to_scene(scene, "frontface", [2.5, 0., 2.0], [-1.5, 0, 0])
     add_camera_to_scene(scene, "topdown", [0.73, 0., 2.3], [0.68, 0, 0])
     create_base(scene, [0, 0, 0.5], 0.5)
-    create_object(scene, "box", [0.7, 0, 1], [0, 0, 0, 1], [0.5, 0.5, 0.02], [0.7, 0.7, 0.7, 1.0], friction=[0.2, 0.005, 0.0001], name="table", static=True)
-    create_object(scene, "box", [0.7, 0, 0.5], [0, 0, 0, 1], [0.05, 0.05, 0.5], [0.9, 0.9, 0.9, 1.0], name="table_leg", static=True)
-    create_object(scene, "capsule", [0.7, 0.5, 1.04], [0, 0.7071068, 0, 0.7071068], [0.02, 0.5], [0.3, 0.3, 1.0, 1.0], name="right_wall", static=True)
-    create_object(scene, "capsule", [0.7, -0.5, 1.04], [0, 0.7071068, 0, 0.7071068], [0.02, 0.5], [0.3, 0.3, 1.0, 1.0], name="left_wall", static=True)
-    create_object(scene, "capsule", [0.2, 0., 1.04], [0.7071068, 0.7071068, 0, 0], [0.02, 0.5], [0.3, 0.3, 1.0, 1.0], name="top_wall", static=True)
-    create_object(scene, "capsule", [1.2, 0., 1.04], [0.7071068, 0.7071068, 0, 0], [0.02, 0.5], [0.3, 0.3, 1.0, 1.0], name="bottom_wall", static=True)
+    create_object(scene, "box", [0.7, 0, 1], [1, 0, 0, 0], [0.5, 0.5, 0.02],
+                  [0.7, 0.7, 0.7, 1.0], friction=[0.2, 0.005, 0.0001],
+                  name="table", static=True)
+    create_object(scene, "box", [0.7, 0, 0.5], [1, 0, 0, 0],
+                  [0.05, 0.05, 0.5], [0.9, 0.9, 0.9, 1.0],
+                  name="table_leg", static=True)
+    create_object(scene, "capsule", [0.7, 0.5, 1.04], [0, 0.7071068, 0, 0.7071068],
+                  [0.02, 0.5], [0.3, 0.3, 1.0, 1.0], name="right_wall", static=True)
+    create_object(scene, "capsule", [0.7, -0.5, 1.04], [0, 0.7071068, 0, 0.7071068],
+                  [0.02, 0.5], [0.3, 0.3, 1.0, 1.0], name="left_wall", static=True)
+    create_object(scene, "capsule", [0.2, 0., 1.04], [0.7071068, 0.7071068, 0, 0],
+                  [0.02, 0.5], [0.3, 0.3, 1.0, 1.0], name="top_wall", static=True)
+    create_object(scene, "capsule", [1.2, 0., 1.04], [0.7071068, 0.7071068, 0, 0],
+                  [0.02, 0.5], [0.3, 0.3, 1.0, 1.0], name="bottom_wall", static=True)
     scene.find("site", "attachment_site").attach(create_ur5e_robotiq85f())
     return scene
 
@@ -212,6 +224,46 @@ def create_object(root, obj_type, pos, quat, size, rgba, friction=[0.5, 0.005, 0
     if not static:
         body.add("joint", type="free")
     body.add("geom", type=obj_type, size=size, rgba=rgba, friction=friction, name=name, density=density)
+    return root
+
+
+def create_box(root, pos, quat, size, width, rgba, friction=[0.5, 0.005, 0.0001],
+               lid_type="slide", name=None, static=False):
+    base = root.worldbody.add("body", pos=pos, quat=quat, name=name)
+    if not static:
+        base.add("joint", type="free")
+    base.add("geom", type="box", size=[size[0] + width, size[1] + width, width/2],
+             rgba=rgba, friction=friction, pos=[0, 0, -(size[2]+width/2)], mass=0.025)
+    base.add("geom", type="box", size=[width/2, size[1] + width, size[2]],
+             rgba=rgba, friction=friction, pos=[size[0]+width/2, 0, 0], mass=0.025)
+    base.add("geom", type="box", size=[width/2, size[1] + width, size[2]],
+             rgba=rgba, friction=friction, pos=[-(size[0]+width/2), 0, 0], mass=0.025)
+    base.add("geom", type="box", size=[size[0], width/2, size[2]],
+             rgba=rgba, friction=friction, pos=[0, size[1]+width/2, 0], mass=0.025)
+    base.add("geom", type="box", size=[size[0], width/2, size[2]],
+             rgba=rgba, friction=friction, pos=[0, -(size[1]+width/2), 0], mass=0.025)
+    lid = base.add("body", pos=[0, 0, size[2] + width/2])
+    if lid_type == "slide":
+        lid.add("joint", type="slide", axis=[0, 1, 0], range=[-2*size[1], 2*size[1]], damping=0.1)
+        lid.add("geom", type="box", size=[size[0]+width, size[1]+width, width/2],
+                rgba=[rgba[0]*0.8, rgba[1]*0.8, rgba[2]*0.8, 1], friction=friction, pos=[0, 0, 0],
+                mass=0.025)
+        lid.add("geom", type="cylinder", size=[0.005, 0.01], rgba=[0.8, 0.8, 0.8, 1.0],
+                pos=[0, -0.02, 0.01+width/2], mass=0.025)
+        lid.add("geom", type="cylinder", size=[0.005, 0.01], rgba=[0.8, 0.8, 0.8, 1.0],
+                pos=[0, 0.02, 0.01+width/2], mass=0.025)
+        lid.add("geom", type="capsule", size=[0.005, 0.02], rgba=[0.8, 0.8, 0.8, 1.0],
+                friction=[1., 0.005, 0.0001],
+                pos=[0, 0, 0.02+width/2], quat=[0.7071068, 0.7071068, 0, 0], mass=0.025)
+    if lid_type == "hinge":
+        lid.add("joint", type="hinge", axis=[1, 0, 0], range=[0, np.pi], pos=[0, -(size[1]+width/2), 0])
+        lid.add("geom", type="box", size=[size[0]+width, size[1]+width, width/2],
+                rgba=[rgba[0]*0.8, rgba[1]*0.8, rgba[2]*0.8, 1], friction=friction, pos=[0, 0, 0],
+                mass=0.025)
+        lid.add("geom", type="box", size=[0.0075, 0.0075, 0.0075], rgba=[0.8, 0.8, 0.8, 1.0],
+                friction=[1., 0.005, 0.0001],
+                pos=[0, size[1]-0.0075, 0.0075+width/2], mass=0.025)
+
     return root
 
 
@@ -262,7 +314,7 @@ def qpos_from_site_pose(model,
                         regularization_strength=3e-2,
                         max_update_norm=2.0,
                         progress_thresh=20.0,
-                        max_steps=100,
+                        max_steps=20,
                         inplace=False):
     dtype = data.qpos.dtype
 
@@ -350,7 +402,7 @@ def qpos_from_site_pose(model,
         else:
             qpos = data.qpos
 
-        return IKResult(qpos, err_norm, steps, success)
+    return IKResult(qpos, err_norm, steps, success)
 
 
 # modified from https://github.com/deepmind/dm_control/blob/main/dm_control/utils/inverse_kinematics.py
