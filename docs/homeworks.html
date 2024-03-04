@@ -34,7 +34,8 @@ $ mamba activate &ltvirtual_environment_name&gt
                 You will need to run <code>mamba activate &ltvirtual_environment_name&gt</code> (or <code>conda</code>) every time you open a new terminal to activate the virtual environment. You can deactivate the virtual environment by running <code>mamba deactivate</code>.<br><br>
                 We will use <a href="https://mujoco.org">MuJoCo</a> and <a href="https://github.com/deepmind/dm_control">dm_control</a> for our simulation environment. You can install them by running:
 <pre>
-$ pip install dm_control  # dm_control automatically installs mujoco
+$ pip install dm_control==1.0.10  #  install them in this order
+$ pip install mujoco==2.3.2
 </pre>
                 also install some other dependencies:
 <pre>
