@@ -94,12 +94,14 @@ if __name__ == "__main__":
     for episode in range(10):
         env.reset()
         done = False
-        cum_reward = 0.0
+        cumulative_reward = 0.0
+        episode_steps = 0
         start = time.time()
         while not done:
             action = np.random.randint(N_ACTIONS)
             state, reward, is_terminal, is_truncated = env.step(action)
             done = is_terminal or is_truncated
-            cum_reward += reward
+            cumulative_reward += reward
+            episode_steps += 1
         end = time.time()
-        print(f"Episode={episode}, reward={cum_reward}, RF={env.data.time/(end-start):.2f}")
+        print(f"Episode={episode}, reward={cumulative_reward}, RPS={cumulative_reward/episode_steps}")
