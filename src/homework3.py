@@ -1,3 +1,5 @@
+# Using multiple processes to collect data for training a model
+
 import time
 from collections import deque
 
